@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LingoBloom - Your Daily Language Studio</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', 'Noto Sans TC', sans-serif;
+            background-color: #f8fafc;
+        }
+        .perspective-1000 { perspective: 1000px; }
+        .transform-style-3d { transform-style: preserve-3d; }
+        .backface-hidden { backface-visibility: hidden; }
+        .rotate-y-180 { transform: rotateY(180deg); }
+    </style>
+</head>
+<body class="text-slate-800 min-h-screen flex flex-col antialiased">
+
+    <header class="w-full bg-white/90 backdrop-blur-md border-b border-slate-100 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex flex-col sm:flex-row justify-between items-center gap-4">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 bg-gradient-to-tr from-teal-600 to-emerald-600 text-white rounded-2xl flex items-center justify-center font-bold text-xl shadow-lg shadow-teal-200">
+                    文
+                </div>
+                <div>
+                    <h1 class="text-xl font-extrabold text-slate-900 leading-none tracking-tight">LingoBloom</h1>
+                    <p class="text-[10px] font-bold text-slate-400 tracking-wider uppercase mt-1">Your Daily Language Studio</p>
+                </div>
+            </div>
+
+            <div class="flex items-center space-x-3">
+                <nav class="flex flex-wrap items-center justify-center gap-2">
+                    <button type="button" onclick="switchTab('dashboard')" id="nav-dashboard" class="px-4 py-2 rounded-xl text-xs font-bold transition flex items-center space-x-1.5 bg-teal-50 text-teal-700 cursor-pointer">
+                        <i class="fa-solid fa-chart-line"></i><span>Dashboard</span>
+                    </button>
+                    <button type="button" onclick="switchTab('flashcards')" id="nav-flashcards" class="px-4 py-2 rounded-xl text-xs font-bold transition flex items-center space-x-1.5 text-slate-600 hover:bg-slate-100 cursor-pointer">
+                        <i class="fa-solid fa-clone"></i><span>Flashcards</span>
+                    </button>
+                    <button type="button" onclick="switchTab('quiz')" id="nav-quiz" class="px-4 py-2 rounded-xl text-xs font-bold transition flex items-center space-x-1.5 text-slate-600 hover:bg-slate-100 cursor-pointer">
+                        <i class="fa-solid fa-puzzle-piece"></i><span>Practice Quiz</span>
+                    </button>
+                </nav>
+                <button type="button" onclick="resetData()" class="px-4 py-2 bg-white border border-slate-200 text-slate-600 rounded-full text-xs font-bold hover:bg-slate-50 transition shadow-sm cursor-pointer flex items-center space-x-1.5">
+                    <i class="fa-solid fa-rotate-right"></i>
+                    <span>Reset</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl w-full mx-auto px-6 py-8 flex-grow space-y-8">
+
+        <div id="tab-content-dashboard" class="space-y-8">
+            <section class="bg-gradient-to-r from-teal-900 via-teal-800 to-emerald-600 text-white rounded-[2.5rem] p-8 md:p-12 relative overflow-hidden shadow-xl shadow-teal-100">
+                <div class="grid grid-cols-1 md:grid-cols-12 items-center gap-8 relative z-10">
+                    <div class="md:col-span-8 space-y-5">
+                        <span class="text-xs font-bold uppercase tracking-widest text-teal-300">A Little Practice, A Lot Of Progress</span>
+                        <h2 class="text-3xl sm:text-5xl font-black leading-tight tracking-tight">
+                            Welcome to LingoBloom! 🌿
+                        </h2>
+                        <p class="text-teal-100/80 text-sm sm:text-base max-w-xl leading-relaxed">
+                            Master Traditional Chinese with Pinyin, Burmese (မြန်မာ), and English definitions effortlessly.
+                        </p>
+                        <div class="pt-2">
+                            <button type="button" onclick="switchTab('flashcards')" class="px-6 py-3 bg-white text-teal-950 font-bold rounded-2xl text-sm shadow-lg hover:bg-teal-50 transition cursor-pointer inline-flex items-center space-x-2">
+                                <span>Start Learning Now</span> <i class="fa-solid fa-arrow-right"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="md:col-span-4 flex justify-center md:justify-end">
+                        <div class="relative flex flex-col items-center">
+                            <div class="w-36 h-36 bg-white/10 backdrop-blur-xl border border-white/20 rounded-full flex items-center justify-center text-6xl shadow-2xl">
+                                🌷
+                            </div>
+                            <div class="mt-4 px-4 py-1.5 bg-amber-300 text-slate-900 text-xs font-bold rounded-full shadow-md flex items-center space-x-1">
+                                <span>✨ Small steps count!</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="grid grid-cols-1 sm:grid-cols-3 gap-5">
+                <div class="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm flex items-center space-x-4">
+                    <div class="w-14 h-14 rounded-2xl bg-teal-50 text-teal-600 flex items-center justify-center text-2xl font-bold">📚</div>
+                    <div>
+                        <p id="stat-reviewed" class="text-2xl font-extrabold text-slate-900">0</p>
+                        <p class="text-xs font-bold text-slate-400">Words Studied</p>
+                    </div>
+                </div>
+                <div class="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm flex items-center space-x-4">
+                    <div class="w-14 h-14 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center text-2xl font-bold">🏆</div>
+                    <div>
+                        <p id="stat-score" class="text-2xl font-extrabold text-slate-900">0 pts</p>
+                        <p class="text-xs font-bold text-slate-400">Quiz High Score</p>
+                    </div>
+                </div>
+                <div class="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm flex items-center space-x-4">
+                    <div class="w-14 h-14 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-2xl font-bold">📖</div>
+                    <div>
+                        <p id="stat-total" class="text-2xl font-extrabold text-slate-900">0</p>
+                        <p class="text-xs font-bold text-slate-400">Total Vocabulary</p>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <div id="tab-content-flashcards" class="hidden space-y-6">
+            <div class="flex flex-wrap items-center gap-2 pb-2">
+                <button type="button" onclick="filterCategory('All')" id="cat-all" class="cat-btn px-4 py-2 bg-teal-600 text-white rounded-full text-xs font-bold shadow-sm transition cursor-pointer">All Words</button>
+                <button type="button" onclick="filterCategory('Computer Science')" id="cat-computer-science" class="cat-btn px-4 py-2 bg-white border border-slate-200 text-slate-600 rounded-full text-xs font-bold hover:bg-slate-50 transition cursor-pointer">Computer Science</button>
+                <button type="button" onclick="filterCategory('Daily Life')" id="cat-daily-life" class="cat-btn px-4 py-2 bg-white border border-slate-200 text-slate-600 rounded-full text-xs font-bold hover:bg-slate-50 transition cursor-pointer">Daily Life</button>
+                <button type="button" onclick="filterCategory('Level 1')" id="cat-level-1" class="cat-btn px-4 py-2 bg-white border border-slate-200 text-slate-600 rounded-full text-xs font-bold hover:bg-slate-50 transition cursor-pointer">TOCFL L1</button>
+                <button type="button" onclick="filterCategory('Level 2')" id="cat-level-2" class="cat-btn px-4 py-2 bg-white border border-slate-200 text-slate-600 rounded-full text-xs font-bold hover:bg-slate-50 transition cursor-pointer">TOCFL L2</button>
+                <button type="button" onclick="filterCategory('Level 3')" id="cat-level-3" class="cat-btn px-4 py-2 bg-white border border-slate-200 text-slate-600 rounded-full text-xs font-bold hover:bg-slate-50 transition cursor-pointer">TOCFL L3</button>
+                <button type="button" onclick="filterCategory('Level 4')" id="cat-level-4" class="cat-btn px-4 py-2 bg-white border border-slate-200 text-slate-600 rounded-full text-xs font-bold hover:bg-slate-50 transition cursor-pointer">TOCFL L4</button>
+                <button type="button" onclick="filterCategory('Level 5')" id="cat-level-5" class="cat-btn px-4 py-2 bg-white border border-slate-200 text-slate-600 rounded-full text-xs font-bold hover:bg-slate-50 transition cursor-pointer">TOCFL L5</button>
+                <button type="button" onclick="filterCategory('Level 6')" id="cat-level-6" class="cat-btn px-4 py-2 bg-white border border-slate-200 text-slate-600 rounded-full text-xs font-bold hover:bg-slate-50 transition cursor-pointer">TOCFL L6</button>
+            </div>
+
+            <div class="text-center text-xs font-bold text-slate-400">
+                CARD <span id="card-current-idx" class="text-teal-600">1</span> OF <span id="card-total-num">0</span>
+            </div>
+
+            <div class="flex justify-center">
+                <div class="w-full max-w-md h-80 perspective-1000">
+                    <div id="flashcard-inner" onclick="flipCard()" class="w-full h-full relative transform-style-3d transition-transform duration-500 cursor-pointer shadow-xl rounded-[2.5rem]">
+                        <div class="absolute inset-0 backface-hidden flex flex-col justify-between p-8 text-center rounded-[2.5rem] bg-white border border-slate-100">
+                            <div class="flex justify-between items-center">
+                                <span id="card-badge" class="px-3 py-1 bg-teal-50 text-teal-600 text-[11px] font-bold rounded-full">Category</span>
+                                <button type="button" onclick="event.stopPropagation(); speakWord();" class="p-3 bg-teal-600 text-white rounded-full hover:bg-teal-700 transition shadow-md cursor-pointer">
+                                    <i class="fa-solid fa-volume-high text-sm"></i>
+                                </button>
+                            </div>
+                            <div class="space-y-2 my-auto">
+                                <h3 id="card-chinese" class="text-5xl font-black text-slate-900">程式設計</h3>
+                                <p id="card-pinyin" class="text-xl text-teal-600 font-semibold">chéng shì shè jì</p>
+                            </div>
+                            <p class="text-[11px] text-slate-400 font-semibold"><i class="fa-solid fa-rotate mr-1"></i> Click card to flip meaning</p>
+                        </div>
+                        <div class="absolute inset-0 backface-hidden rotate-y-180 flex flex-col justify-between p-8 text-center rounded-[2.5rem] bg-teal-600 text-white">
+                            <div class="flex justify-between items-center">
+                                <span class="text-[10px] text-teal-100 font-bold uppercase">Meaning</span>
+                                <span class="text-xs bg-teal-500/50 px-3 py-1 rounded-full"><i class="fa-solid fa-rotate mr-1"></i> Flip Back</span>
+                            </div>
+                            <div class="space-y-3 my-auto">
+                                <div>
+                                    <p class="text-[10px] text-teal-100 uppercase font-bold mb-1">English</p>
+                                    <p id="card-english" class="text-xl font-bold text-amber-300">Programming</p>
+                                </div>
+                                <div class="w-12 h-0.5 bg-teal-400/40 mx-auto"></div>
+                                <div>
+                                    <p class="text-[10px] text-teal-100 uppercase font-bold mb-1">Burmese (မြန်မာ)</p>
+                                    <p id="card-burmese" class="text-base font-semibold">ကွန်ပျူတာပရိုဂရမ်ရေးဆွဲခြင်း</p>
+                                </div>
+                            </div>
+                            <p class="text-[11px] text-teal-100">Click to return</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex justify-center space-x-4 pt-2">
+                <button type="button" onclick="prevCard()" class="px-6 py-3 bg-white border border-slate-200 text-slate-700 rounded-2xl font-bold text-xs shadow-sm hover:bg-slate-50 transition cursor-pointer">
+                    <i class="fa-solid fa-arrow-left mr-2"></i> Previous
+                </button>
+                <button type="button" onclick="nextCard()" class="px-6 py-3 bg-teal-600 text-white rounded-2xl font-bold text-xs shadow-md shadow-teal-100 hover:bg-teal-700 transition cursor-pointer">
+                    Next <i class="fa-solid fa-arrow-right ml-2"></i>
+                </button>
+            </div>
+        </div>
+
+        <div id="tab-content-quiz" class="hidden max-w-xl mx-auto">
+            <div class="bg-white p-8 rounded-[2.5rem] shadow-sm border border-slate-100 space-y-6">
+                <div class="flex justify-between items-center">
+                    <span class="text-xs font-bold text-teal-600 uppercase tracking-widest">Bilingual Quiz (English + Burmese)</span>
+                    <span id="quiz-score-badge" class="px-3 py-1 bg-amber-100 text-amber-800 rounded-full text-xs font-bold">Score: 0</span>
+                </div>
+                <div>
+                    <p class="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-2">QUESTION</p>
+                    <h4 id="quiz-question" class="text-xl font-extrabold text-slate-900">What does this word mean?</h4>
+                </div>
+                <div id="quiz-options" class="grid grid-cols-1 gap-3"></div>
+                <p id="quiz-feedback" class="text-center font-bold text-sm min-h-[1.5rem]"></p>
+            </div>
+        </div>
+    </main>
+
+    <footer class="bg-white border-t border-slate-100 py-6 mt-12 text-center text-xs text-slate-400 font-semibold">
+        <p>© 2026 LingoBloom. Specification & GitHub Pages Ready.</p>
+    </footer>
+
+    <script>
+        const vocabList = [
+            { category: "Computer Science", chinese: "程式設計", pinyin: "chéng shì shè jì", burmese: "ကွန်ပျူတာပရိုဂရမ်ရေးဆွဲခြင်း", english: "Programming" },
+            { category: "Computer Science", chinese: "資料結構", pinyin: "zī liào jié gòu", burmese: "ဒေတာဆောက်အအုံ", english: "Data Structures" },
+            { category: "Computer Science", chinese: "演算法", pinyin: "yǎn suàn fǎ", burmese: "အယ်လ်ဂိုရီသမ်", english: "Algorithm" },
+            { category: "Computer Science", chinese: "資料庫", pinyin: "zī liào kù", burmese: "ဒေတာဘေ့စ်", english: "Database" },
+            { category: "Computer Science", chinese: "人工智慧", pinyin: "rén gōng zhì huì", burmese: "ဉာဏ်ရည်တု (AI)", english: "Artificial Intelligence" },
+            { category: "Computer Science", chinese: "網路安全", pinyin: "wǎng lù ān quán", burmese: "ဆိုက်ဘာလုံခြုံရေး", english: "Cybersecurity" },
+            { category: "Computer Science", chinese: "雲端運算", pinyin: "yún duān yùn suàn", burmese: "ကလောက်ကွန်ပျူတင်း", english: "Cloud Computing" },
+            { category: "Computer Science", chinese: "變數", pinyin: "biàn shù", burmese: "ဗာရီရေးဘဲလ်", english: "Variable" },
+            { category: "Computer Science", chinese: "作業系統", pinyin: "zuò yè xì tǒng", burmese: "စက်လည်ပတ်ရေးစနစ်", english: "Operating System" },
+            { category: "Computer Science", chinese: "原始碼", pinyin: "yuán shǐ mǎ", burmese: "ဆော့ဖ်ဝဲရေးနည်းကုဒ်", english: "Source Code" },
+            { category: "Computer Science", chinese: "編譯器", pinyin: "biān yì qì", burmese: "ကွန်ပိုင်းလာ", english: "Compiler" },
+            { category: "Computer Science", chinese: "迴圈", pinyin: "huí quán", burmese: "ကွင်းဆက်လည်ပတ်မှု", english: "Loop" },
+            { category: "Computer Science", chinese: "函式", pinyin: "hán shì", burmese: "ဖန်ရှင်", english: "Function" },
+            { category: "Computer Science", chinese: "陣列", pinyin: "zhèn liè", burmese: "အာရေး", english: "Array" },
+            { category: "Computer Science", chinese: "物件導向", pinyin: "wù jiàn dǎo xiàng", burmese: "ပစ္စည်းအခြေပြုပရိုဂရမ်", english: "Object-Oriented" },
+            { category: "Computer Science", chinese: "除錯", pinyin: "chú cuò", burmese: "အမှားရှာပြင်ဆင်ခြင်း", english: "Debugging" },
+
+            { category: "Daily Life", chinese: "螢火蟲", pinyin: "yíng huǒ chóng", burmese: "ပိုးစုန်းကြူး", english: "Firefly" },
+            { category: "Daily Life", chinese: "糖果", pinyin: "táng guǒ", burmese: "သကြားလုံး", english: "Candy / Sweets" },
+            { category: "Daily Life", chinese: "擱淺", pinyin: "gē qiǎn", burmese: "သောင်တင်သည်", english: "Stranded" },
+            { category: "Daily Life", chinese: "捷運", pinyin: "jié yùn", burmese: "အမ်အာတီ (MRT)", english: "MRT Metro" },
+            { category: "Daily Life", chinese: "夜市", pinyin: "yè shì", burmese: "ညဈေး", english: "Night Market" },
+            { category: "Daily Life", chinese: "便利商店", pinyin: "biàn lì shāng diàn", burmese: "၂၄ နာရီ ကုန်စုံဆိုင်", english: "Convenience Store" },
+            { category: "Daily Life", chinese: "咖啡館", pinyin: "kā fēi guǎn", burmese: "ကော်ဖီဆိုင်", english: "Cafe" },
+            { category: "Daily Life", chinese: "圖書館", pinyin: "tú shū guǎn", burmese: "စာကြည့်တိုက်", english: "Library" },
+            { category: "Daily Life", chinese: "火車站", pinyin: "huǒ chē zhàn", burmese: "ရထားဘူတာရုံ", english: "Train Station" },
+            { category: "Daily Life", chinese: "超級市場", pinyin: "chāo jí shì chǎng", burmese: "စူပါမားကတ်", english: "Supermarket" },
+            { category: "Daily Life", chinese: "郵局", pinyin: "yóu jú", burmese: "စာတိုက်", english: "Post Office" },
+            { category: "Daily Life", chinese: "銀行", pinyin: "yín háng", burmese: "ဘဏ်", english: "Bank" },
+            { category: "Daily Life", chinese: "藥局", pinyin: "yào jú", burmese: "ဆေးဆိုင်", english: "Pharmacy" },
+            { category: "Daily Life", chinese: "餐廳", pinyin: "cān tīng", burmese: "စားသောက်ဆိုင်", english: "Restaurant" },
+            { category: "Daily Life", chinese: "機場", pinyin: "jī chǎng", burmese: "လေဆိပ်", english: "Airport" },
+            { category: "Daily Life", chinese: "公園", pinyin: "gōng yuán", burmese: "ပန်းခြံ", english: "Park" },
+
+            { category: "Level 1", chinese: "學習", pinyin: "xué xí", burmese: "လေ့လာသင်ယူသည်", english: "To study" },
+            { category: "Level 1", chinese: "時間", pinyin: "shí jiān", burmese: "အချိန်", english: "Time" },
+            { category: "Level 1", chinese: "朋友", pinyin: "péng yǒu", burmese: "သူငယ်ချင်း", english: "Friend" },
+            { category: "Level 1", chinese: "高興", pinyin: "gāo xìng", burmese: "ဝမ်းသာသည်", english: "Happy" },
+            { category: "Level 1", chinese: "工作", pinyin: "gōng zuò", burmese: "အလုပ်လုပ်သည်", english: "Work" },
+            { category: "Level 1", chinese: "喜歡", pinyin: "xǐ huān", burmese: "ကြိုက်နှစ်သက်သည်", english: "To like" },
+            { category: "Level 1", chinese: "學校", pinyin: "xué xiào", burmese: "ကျောင်း", english: "School" },
+            { category: "Level 1", chinese: "老師", pinyin: "lǎo shī", burmese: "ဆရာ", english: "Teacher" },
+            { category: "Level 1", chinese: "學生", pinyin: "xué shēng", burmese: "ကျောင်းသား", english: "Student" },
+            { category: "Level 1", chinese: "手機", pinyin: "shǒu jī", burmese: "ဖုန်း", english: "Mobile phone" },
+            { category: "Level 1", chinese: "明天", pinyin: "míng tiān", burmese: "မနက်ဖြန်", english: "Tomorrow" },
+            { category: "Level 1", chinese: "今天", pinyin: "jīn tiān", burmese: "ယနေ့", english: "Today" },
+            { category: "Level 1", chinese: "水", pinyin: "shuǐ", burmese: "ရေ", english: "Water" },
+            { category: "Level 1", chinese: "茶", pinyin: "chá", burmese: "လက်ဖက်ရည်", english: "Tea" },
+            { category: "Level 1", chinese: "吃飯", pinyin: "chī fàn", burmese: "ထမင်းစားသည်", english: "Eat a meal" },
+            { category: "Level 1", chinese: "錢", pinyin: "qián", burmese: "ငွေ", english: "Money" },
+            { category: "Level 1", chinese: "醫生", pinyin: "yī shēng", burmese: "ဆရာဝန်", english: "Doctor" },
+            { category: "Level 1", chinese: "醫院", pinyin: "yī yuàn", burmese: "ဆေးရုံ", english: "Hospital" },
+            { category: "Level 1", chinese: "天氣", pinyin: "tiān qì", burmese: "ရာသီဥတု", english: "Weather" },
+            { category: "Level 1", chinese: "貓", pinyin: "māo", burmese: "ကြောင်", english: "Cat" },
+
+            { category: "Level 2", chinese: "機會", pinyin: "jī huì", burmese: "အခွင့်အရေး", english: "Opportunity" },
+            { category: "Level 2", chinese: "成功", pinyin: "chéng gōng", burmese: "အောင်မြင်သည်", english: "Success" },
+            { category: "Level 2", chinese: "挑戰", pinyin: "tiǎo zhàn", burmese: "စိန်ခေါ်မှု", english: "Challenge" },
+            { category: "Level 2", chinese: "環境", pinyin: "huán jìng", burmese: "ပတ်ဝန်းကျင်", english: "Environment" },
+            { category: "Level 2", chinese: "經驗", pinyin: "jīng yàn", burmese: "အတွေ့အကြုံ", english: "Experience" },
+            { category: "Level 2", chinese: "進步", pinyin: "jìn bù", burmese: "တိုးတက်လာသည်", english: "Progress" },
+            { category: "Level 2", chinese: "安全", pinyin: "ān quán", burmese: "လုံခြုံစိတ်ချရသည်", english: "Safe" },
+            { category: "Level 2", chinese: "重要", pinyin: "zhòng yào", burmese: "အရေးကြီးသည်", english: "Important" },
+            { category: "Level 2", chinese: "決定", pinyin: "jué dìng", burmese: "ဆုံးဖြတ်သည်", english: "To decide" },
+            { category: "Level 2", chinese: "了解", pinyin: "liǎo jiě", burmese: "နားလည်သည်", english: "Understand" },
+            { category: "Level 2", chinese: "輕鬆", pinyin: "qīng sōng", burmese: "ပေါ့ပါးလွတ်လပ်သည်", english: "Relaxed" },
+            { category: "Level 2", chinese: "容易", pinyin: "róng yì", burmese: "လွယ်ကူသည်", english: "Easy" },
+            { category: "Level 2", chinese: "困難", pinyin: "kùn nán", burmese: "ခက်ခဲသည်", english: "Difficult" },
+            { category: "Level 2", chinese: "努力", pinyin: "nǔ lì", burmese: "ကြိုးစားအားထုတ်သည်", english: "Hardworking" },
+            { category: "Level 2", chinese: "放棄", pinyin: "fàng qì", burmese: "လက်လျှော့သည်", english: "Give up" },
+            { category: "Level 2", chinese: "堅持", pinyin: "jiān chí", burmese: "ဇွဲရှိသည်", english: "Persist" },
+            { category: "Level 2", chinese: "計劃", pinyin: "jì huà", burmese: "အစီအစဉ်", english: "Plan" },
+            { category: "Level 2", chinese: "準備", pinyin: "zhǔn bèi", burmese: "ပြင်ဆင်သည်", english: "Prepare" },
+            { category: "Level 2", chinese: "參加", pinyin: "cān jiā", burmese: "ပါဝင်သည်", english: "Participate" },
+            { category: "Level 2", chinese: "目標", pinyin: "mù biāo", burmese: "ပန်းတိုင်", english: "Goal" },
+
+            { category: "Level 3", chinese: "緊張", pinyin: "jǐn zhāng", burmese: "စိုးရိမ်ပူပန်သည်", english: "Nervous" },
+            { category: "Level 3", chinese: "建議", pinyin: "jiàn yì", burmese: "အကြံပြုချက်", english: "Suggestion" },
+            { category: "Level 3", chinese: "影響", pinyin: "yǐng xiǎng", burmese: "သက်ရောက်မှု", english: "Influence" },
+            { category: "Level 3", chinese: "規定", pinyin: "guī dìng", burmese: "စည်းကမ်းသတ်မှတ်ချက်", english: "Regulation" },
+            { category: "Level 3", chinese: "精彩", pinyin: "jīng cǎi", burmese: "လက်ရာမြောက်သော", english: "Brilliant" },
+            { category: "Level 3", chinese: "宣傳", pinyin: "xuān chuán", burmese: "ကြော်ငြာဝါဒဖြန့်သည်", english: "Publicize" },
+            { category: "Level 3", chinese: "適應", pinyin: "shì yìng", burmese: "ကျင့်သားရသည်", english: "To adapt" },
+            { category: "Level 3", chinese: "溝通", pinyin: "gōu tōng", burmese: "ဆက်ဆံရေး", english: "Communicate" },
+            { category: "Level 3", chinese: "欣賞", pinyin: "xīn shǎng", burmese: "ခံစားနှစ်သက်သည်", english: "Appreciate" },
+            { category: "Level 3", chinese: "鼓勵", pinyin: "gǔ lì", burmese: "အားပေးလှုံ့ဆော်သည်", english: "Encourage" },
+            { category: "Level 3", chinese: "達成", pinyin: "dá chéng", burmese: "အောင်မြင်စွာရယူသည်", english: "Achieve" },
+            { category: "Level 3", chinese: "態度", pinyin: "tài dù", burmese: "သဘောထား", english: "Attitude" },
+            { category: "Level 3", chinese: "負擔", pinyin: "fù dān", burmese: "ဝန်ထုပ်ဝန်ပိုး", english: "Burden" },
+            { category: "Level 3", chinese: "專業", pinyin: "zhuān yè", burmese: "ပညာရှင်ဆန်သော", english: "Professional" },
+            { category: "Level 3", chinese: "聯合", pinyin: "lián hé", burmese: "ပူးပေါင်းသည်", english: "Combine" },
+            { category: "Level 3", chinese: "滿足", pinyin: "mǎn zú", burmese: "ကျေနပ်သည်", english: "Satisfy" },
+            { category: "Level 3", chinese: "探索", pinyin: "tàn suǒ", burmese: "စူးစမ်းရှာဖွေသည်", english: "Explore" },
+            { category: "Level 3", chinese: "尋找", pinyin: "xún zhǎo", burmese: "ရှာဖွေသည်", english: "Search for" },
+            { category: "Level 3", chinese: "證明", pinyin: "zhèng míng", burmese: "သက်သေပြသည်", english: "Prove" },
+            { category: "Level 3", chinese: "信任", pinyin: "xìn rèn", burmese: "ယုံကြည်ကိုးစားသည်", english: "Trust" },
+
+            { category: "Level 4", chinese: "哲學", pinyin: "zhé xué", burmese: "ဒဿနိကဗေဒ", english: "Philosophy" },
+            { category: "Level 4", chinese: "經濟", pinyin: "jīng jì", burmese: "စီးပွားရေး", english: "Economy" },
+            { category: "Level 4", chinese: "實踐", pinyin: "shí jiàn", burmese: "လက်တွေ့အကောင်အထည်ဖော်သည်", english: "Practice" },
+            { category: "Level 4", chinese: "組織", pinyin: "zǔ zhī", burmese: "အဖွဲ့အစည်း", english: "Organization" },
+            { category: "Level 4", chinese: "價值", pinyin: "jià zhí", burmese: "တန်ဖိုး", english: "Value" },
+            { category: "Level 4", chinese: "創新", pinyin: "chuàng xīn", burmese: "ဆန်းသစ်တီထွင်မှု", english: "Innovation" },
+            { category: "Level 4", chinese: "危機", pinyin: "wēi jī", burmese: "အကျပ်အတည်း", english: "Crisis" },
+            { category: "Level 4", chinese: "策略", pinyin: "cè lüè", burmese: "မဟာဗျူဟာ", english: "Strategy" },
+            { category: "Level 4", chinese: "某種", pinyin: "mǒu zhǒng", burmese: "တစ်ခုခုသော", english: "Some kind of" },
+            { category: "Level 4", chinese: "系統", pinyin: "xì tǒng", burmese: "စနစ်", english: "System" },
+            { category: "Level 4", chinese: "普遍", pinyin: "pǔ biàn", burmese: "အများပြည်သူဆိုင်ရာ", english: "Universal" },
+            { category: "Level 4", chinese: "靈感", pinyin: "líng gǎn", burmese: "ဉာဏ်ကွန့်မြူးမှု", english: "Inspiration" },
+            { category: "Level 4", chinese: "範圍", pinyin: "fàn wéi", burmese: "နယ်ပယ်အကျယ်အဝန်း", english: "Scope" },
+            { category: "Level 4", chinese: "結構", pinyin: "jié gòu", burmese: "တည်ဆောက်ပုံ", english: "Structure" },
+            { category: "Level 4", chinese: "扮演", pinyin: "bàn yǎn", burmese: "ဇာတ်ကောင်နေရာမှ ပါဝင်သည်", english: "Play a role" },
+            { category: "Level 4", chinese: "促進", pinyin: "cù jìn", burmese: "မြှင့်တင်ပေးသည်", english: "Promote" },
+            { category: "Level 4", chinese: "維持", pinyin: "wéi chí", burmese: "ထိန်းသိမ်းသည်", english: "Maintain" },
+            { category: "Level 4", chinese: "供應", pinyin: "gōng yìng", burmese: "ထောက်ပံ့ပေးသည်", english: "Supply" },
+            { category: "Level 4", chinese: "評估", pinyin: "píng gū", burmese: "ဆန်းစစ်အကဲဖြတ်သည်", english: "Evaluate" },
+            { category: "Level 4", chinese: "轉變", pinyin: "zhuǎn biàn", burmese: "ပြောင်းလဲသွားသည်", english: "Transform" },
+
+            { category: "Level 5", chinese: "矛盾", pinyin: "máo dùn", burmese: "ကွဲလွဲမှု", english: "Contradiction" },
+            { category: "Level 5", chinese: "趨勢", pinyin: "qū shì", burmese: "ရေစီးကြောင်း", english: "Trend" },
+            { category: "Level 5", chinese: "潛力", pinyin: "qián lì", burmese: "ရင်ဝှက်ထားသောစွမ်းရည်", english: "Potential" },
+            { category: "Level 5", chinese: "擔憂", pinyin: "dān yōu", burmese: "စိုးရိမ်ပူပန်သည်", english: "To worry" },
+            { category: "Level 5", chinese: "震撼", pinyin: "zhèn hàn", burmese: "တုန်လှုပ်ချောက်ချားဖွယ်", english: "Shocking" },
+            { category: "Level 5", chinese: "智慧", pinyin: "zhì huì", burmese: "ပညာဉာဏ်", english: "Wisdom" },
+            { category: "Level 5", chinese: "規範", pinyin: "guī fàn", burmese: "စံနှုန်းစည်းကမ်း", english: "Standard" },
+            { category: "Level 5", chinese: "協調", pinyin: "xié tiáo", burmese: "ညှိနှိုင်းဆောင်ရွက်သည်", english: "Coordinate" },
+            { category: "Level 5", chinese: "權衡", pinyin: "quán héng", burmese: "ချိန်ဆဆုံးဖြတ်သည်", english: "Trade-off" },
+            { category: "Level 5", chinese: "激發", pinyin: "jī fā", burmese: "လှုံ့ဆော်နိုးကြားစေသည်", english: "Stimulate" },
+            { category: "Level 5", chinese: "卓越", pinyin: "zhuó yuè", burmese: "ထူးချွန်ထက်မြက်သော", english: "Outstanding" },
+            { category: "Level 5", chinese: "洞察", pinyin: "dòng chá", burmese: "ထိုးထွင်းသိမြင်မှု", english: "Insight" },
+            { category: "Level 5", chinese: "昇華", pinyin: "shēng huá", burmese: "အဆင့်မြင့်တင်သည်", english: "Elevate" },
+            { category: "Level 5", chinese: "抉擇", pinyin: "jué zé", burmese: "ခက်ခဲစွာဆုံးဖြတ်ခြင်း", english: "Decision" },
+            { category: "Level 5", chinese: "淵博", pinyin: "yuān bó", burmese: "ဗဟုသုတကြွယ်ဝသော", english: "Profound" },
+            { category: "Level 5", chinese: "貫通", pinyin: "guàn tōng", burmese: "စုံလင်စွာနားလည်ခြင်း", english: "Master thoroughly" },
+            { category: "Level 5", chinese: "凝聚", pinyin: "níng jù", burmese: "စုစည်းညီညွတ်စေသည်", english: "Condense" },
+            { category: "Level 5", chinese: "迴避", pinyin: "huí bì", burmese: "ရှောင်ရှားသည်", english: "Avoid" },
+            { category: "Level 5", chinese: "實質", pinyin: "shí zhí", burmese: "အနှစ်သာရ", english: "Substance" },
+            { category: "Level 5", chinese: "轉機", pinyin: "zhuǎn jī", burmese: "အခွင့်အလမ်းသစ်", english: "Turning point" },
+
+            { category: "Level 6", chinese: "巔峰", pinyin: "diān fēng", burmese: "အထွတ်အထိပ်", english: "Peak" },
+            { category: "Level 6", chinese: "瞬息萬變", pinyin: "shùn xī wàn biàn", burmese: "အပြောင်းအလဲမြန်သော", english: "Rapid changes" },
+            { category: "Level 6", chinese: "爐火純青", pinyin: "lú huǒ chún qīng", burmese: "ပညာရပ်ဝယ် အထွတ်အထိပ်ရောက်ခြင်း", english: "Proficient" },
+            { category: "Level 6", chinese: "潛移默化", pinyin: "qián yí mò huà", burmese: "မသိလိုက်ဘဲ ပြောင်းလဲလာခြင်း", english: "Subtle influence" },
+            { category: "Level 6", chinese: "滄海一粟", pinyin: "cāng hǎi yī sù", burmese: "ပင်လယ်ပြင်ထဲမှ မုယောစေ့တစ်စေ့", english: "A drop in the ocean" },
+            { category: "Level 6", chinese: "循序漸進", pinyin: "xún xù jiàn jìn", burmese: "အဆင့်လိုက် တိုးတက်လာခြင်း", english: "Step by step" },
+            { category: "Level 6", chinese: "舉一反三", pinyin: "jǔ yī fǎn sān", burmese: "တစ်ခုကိုပြ၍ သုံးခုကိုသိခြင်း", english: "Draw inferences" },
+            { category: "Level 6", chinese: "融會貫通", pinyin: "róng huì guàn tōng", burmese: "ပေါင်းစပ်နားလည်ခြင်း", english: "Synthesize" },
+            { category: "Level 6", chinese: "慧眼識珠", pinyin: "huì yǎn shí zhū", burmese: "ထူးချွန်သူကို ခွဲခြားသိမြင်ခြင်း", english: "Discerning eye" },
+            { category: "Level 6", chinese: "苦盡甘來", pinyin: "kǔ jìn gān lái", burmese: "ဒုက္ခကုန်၍ သုခရောက်ခြင်း", english: "Sweetness after bitterness" },
+            { category: "Level 6", chinese: "博大精深", pinyin: "bó dà jīng shēn", burmese: "ကျယ်ပြန့်နက်နဲသော", english: "Vast and profound" },
+            { category: "Level 6", chinese: "墨守成規", pinyin: "mò shǒu chéng guī", burmese: "စည်းမျဉ်းဟောင်းကို စွဲကိုင်ခြင်း", english: "Stick to convention" },
+            { category: "Level 6", chinese: "巧奪天工", pinyin: "qiǎo duó tiān gōng", burmese: "သဘာဝထက်လွန်ကဲသောလက်ရာ", english: "Exquisite craftsmanship" },
+            { category: "Level 6", chinese: "孜孜不倦", pinyin: "zī zī bù juàn", burmese: "မမောမပန်း ကြိုးစားခြင်း", english: "Diligently unflagging" },
+            { category: "Level 6", chinese: "銳意進取", pinyin: "ruì yì jìn qǔ", burmese: "ပြတ်သားစွာ ရှေ့သို့တက်လှမ်းခြင်း", english: "Resolute & progressive" },
+            { category: "Level 6", chinese: "獨具匠心", pinyin: "dú jù jiàng xīn", burmese: "ထူးခြားဆန်းသစ် ဖန်တီးနိုင်စွမ်း", english: "Originality" },
+            { category: "Level 6", chinese: "螢窗雪案", pinyin: "yíng chuāng xuě àn", burmese: "ဆင်းရဲစွာ ပညာသင်ခြင်း", english: "Diligent study" },
+            { category: "Level 6", chinese: "磨杵成針", pinyin: "mó chǔ chéng zhēn", burmese: "ဇွဲမလျှော့ဘဲ ကြိုးစားခြင်း", english: "Perseverance" },
+            { category: "Level 6", chinese: "揮洒自如", pinyin: "huī sǎ zì rú", burmese: "ကျွမ်းကျင်ပိုင်နိုင်စွာ သုံးနိုင်ခြင်း", english: "Fluent and at ease" },
+            { category: "Level 6", chinese: "登峰造極", pinyin: "dēng fēng zào jí", burmese: "အထွတ်အထိပ်သို့ ရောက်ရှိခြင်း", english: "Reach perfection" }
+        ];
+
+        let currentCategory = "All";
+        let filteredVocab = vocabList.slice();
+        let currentIndex = 0;
+        let quizScore = 0;
+        let highScore = parseInt(localStorage.getItem('lingobloom_highscore'), 10);
+        if (isNaN(highScore) || highScore < 0) highScore = 0;
+        let studiedCount = parseInt(localStorage.getItem('lingobloom_reviewed'), 10);
+        if (isNaN(studiedCount) || studiedCount < 0) studiedCount = 0;
+        let currentQuizCorrect = null;
+        let quizLocked = false;
+        let quizTimer = null;
+
+        function categoryToId(cat) {
+            return cat.toLowerCase().replace(/\s+/g, '-');
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            updateDashboardStats();
+            updateFlashcard();
+            loadQuizQuestion();
+        });
+
+        function switchTab(tabId) {
+            ['dashboard', 'flashcards', 'quiz'].forEach(function(t) {
+                var el = document.getElementById('tab-content-' + t);
+                if (el) el.classList.add('hidden');
+                var btn = document.getElementById('nav-' + t);
+                if (btn) {
+                    btn.className = "px-4 py-2 rounded-xl text-xs font-bold transition flex items-center space-x-1.5 text-slate-600 hover:bg-slate-100 cursor-pointer";
+                }
+            });
+
+            var targetTab = document.getElementById('tab-content-' + tabId);
+            if (targetTab) targetTab.classList.remove('hidden');
+
+            var activeBtn = document.getElementById('nav-' + tabId);
+            if (activeBtn) {
+                activeBtn.className = "px-4 py-2 rounded-xl text-xs font-bold transition flex items-center space-x-1.5 bg-teal-50 text-teal-700 cursor-pointer";
+            }
+
+            if (tabId === 'quiz') {
+                var container = document.getElementById('quiz-options');
+                if (container && container.children.length === 0) {
+                    loadQuizQuestion();
+                }
+            }
+        }
+
+        function updateDashboardStats() {
+            var revElem = document.getElementById('stat-reviewed');
+            var scoreElem = document.getElementById('stat-score');
+            var totalElem = document.getElementById('stat-total');
+            if (revElem) revElem.innerText = studiedCount;
+            if (scoreElem) scoreElem.innerText = highScore + ' pts';
+            if (totalElem) totalElem.innerText = vocabList.length;
+        }
+
+        function filterCategory(cat) {
+            currentCategory = cat;
+            filteredVocab = cat === "All" ? vocabList.slice() : vocabList.filter(function(item) { return item.category === cat; });
+            currentIndex = 0;
+
+            var categories = ["All", "Computer Science", "Daily Life", "Level 1", "Level 2", "Level 3", "Level 4", "Level 5", "Level 6"];
+            categories.forEach(function(c) {
+                var btn = document.getElementById('cat-' + categoryToId(c));
+                if (btn) {
+                    if (c === cat) {
+                        btn.className = "cat-btn px-4 py-2 bg-teal-600 text-white rounded-full text-xs font-bold shadow-sm transition cursor-pointer";
+                    } else {
+                        btn.className = "cat-btn px-4 py-2 bg-white border border-slate-200 text-slate-600 rounded-full text-xs font-bold hover:bg-slate-50 transition cursor-pointer";
+                    }
+                }
+            });
+
+            updateFlashcard();
+        }
+
+        function updateFlashcard() {
+            if (filteredVocab.length === 0) return;
+            var item = filteredVocab[currentIndex];
+
+            var badge = document.getElementById('card-badge');
+            var chinese = document.getElementById('card-chinese');
+            var pinyin = document.getElementById('card-pinyin');
+            var english = document.getElementById('card-english');
+            var burmese = document.getElementById('card-burmese');
+            var curIdx = document.getElementById('card-current-idx');
+            var totNum = document.getElementById('card-total-num');
+            var innerCard = document.getElementById('flashcard-inner');
+
+            if (badge) badge.innerText = item.category;
+            if (chinese) chinese.innerText = item.chinese;
+            if (pinyin) pinyin.innerText = item.pinyin;
+            if (english) english.innerText = item.english;
+            if (burmese) burmese.innerText = item.burmese;
+            if (curIdx) curIdx.innerText = currentIndex + 1;
+            if (totNum) totNum.innerText = filteredVocab.length;
+            if (innerCard) innerCard.classList.remove('rotate-y-180');
+        }
+
+        function flipCard() {
+            var innerCard = document.getElementById('flashcard-inner');
+            if (innerCard) {
+                innerCard.classList.toggle('rotate-y-180');
+                studiedCount++;
+                localStorage.setItem('lingobloom_reviewed', studiedCount);
+                updateDashboardStats();
+            }
+        }
+
+        function nextCard() {
+            if (filteredVocab.length === 0) return;
+            currentIndex = (currentIndex + 1) % filteredVocab.length;
+            updateFlashcard();
+        }
+
+        function prevCard() {
+            if (filteredVocab.length === 0) return;
+            currentIndex = (currentIndex - 1 + filteredVocab.length) % filteredVocab.length;
+            updateFlashcard();
+        }
+
+        function speakWord() {
+            if (filteredVocab.length === 0) return;
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel();
+                var utterance = new SpeechSynthesisUtterance(filteredVocab[currentIndex].chinese);
+                utterance.lang = 'zh-TW';
+                window.speechSynthesis.speak(utterance);
+            }
+        }
+
+        function loadQuizQuestion() {
+            if (!vocabList || vocabList.length < 3) return;
+
+            if (quizTimer) {
+                clearTimeout(quizTimer);
+                quizTimer = null;
+            }
+
+            quizLocked = false;
+            currentQuizCorrect = vocabList[Math.floor(Math.random() * vocabList.length)];
+
+            var qElem = document.getElementById('quiz-question');
+            if (qElem) {
+                qElem.innerText = 'What does "' + currentQuizCorrect.chinese + '" (' + currentQuizCorrect.pinyin + ') mean?';
+            }
+
+            function formatOpt(obj) {
+                return obj.english + ' (' + obj.burmese + ')';
+            }
+
+            var correctText = formatOpt(currentQuizCorrect);
+            var optionSet = {};
+            optionSet[correctText] = true;
+            var optionList = [correctText];
+
+            var safety = 0;
+            while (optionList.length < 3 && safety < 500) {
+                safety++;
+                var randItem = vocabList[Math.floor(Math.random() * vocabList.length)];
+                var optText = formatOpt(randItem);
+                if (!optionSet[optText]) {
+                    optionSet[optText] = true;
+                    optionList.push(optText);
+                }
+            }
+
+            optionList.sort(function() { return Math.random() - 0.5; });
+
+            var container = document.getElementById('quiz-options');
+            var feedback = document.getElementById('quiz-feedback');
+
+            if (container) container.innerHTML = '';
+            if (feedback) {
+                feedback.innerText = '';
+                feedback.className = 'text-center font-bold text-sm min-h-[1.5rem]';
+            }
+
+            if (!container) return;
+
+            optionList.forEach(function(opt) {
+                var btn = document.createElement('button');
+                btn.type = 'button';
+                btn.className = 'quiz-opt-btn w-full py-3 px-5 text-left border border-slate-200 rounded-2xl font-semibold text-xs text-slate-700 hover:border-teal-500 hover:bg-teal-50/50 transition cursor-pointer';
+                btn.innerText = opt;
+                btn.dataset.value = opt;
+                btn.addEventListener('click', function() {
+                    checkQuizAnswer(opt, this);
+                });
+                container.appendChild(btn);
+            });
+        }
+
+        function checkQuizAnswer(selected, btn) {
+            if (quizLocked) return;
+            quizLocked = true;
+
+            var allBtns = document.querySelectorAll('.quiz-opt-btn');
+            allBtns.forEach(function(b) {
+                b.disabled = true;
+                b.classList.add('opacity-70', 'cursor-not-allowed');
+            });
+
+            var correctText = currentQuizCorrect.english + ' (' + currentQuizCorrect.burmese + ')';
+            var feedback = document.getElementById('quiz-feedback');
+
+            if (selected === correctText) {
+                btn.className = 'quiz-opt-btn w-full py-3 px-5 text-left border border-emerald-500 bg-emerald-500 text-white rounded-2xl font-semibold text-xs';
+                if (feedback) {
+                    feedback.innerText = '✨ Correct! အဖြေမှန်ပါတယ်!';
+                    feedback.className = 'text-center font-bold text-xs text-emerald-600';
+                }
+                quizScore += 10;
+            } else {
+                btn.className = 'quiz-opt-btn w-full py-3 px-5 text-left border border-rose-500 bg-rose-500 text-white rounded-2xl font-semibold text-xs';
+                allBtns.forEach(function(b) {
+                    if (b.innerText === correctText) {
+                        b.className = 'quiz-opt-btn w-full py-3 px-5 text-left border border-emerald-500 bg-emerald-100 text-emerald-800 rounded-2xl font-semibold text-xs';
+                    }
+                });
+                if (feedback) {
+                    feedback.innerText = '❌ Incorrect! Correct: ' + correctText;
+                    feedback.className = 'text-center font-bold text-xs text-rose-600';
+                }
+            }
+
+            var scoreBadge = document.getElementById('quiz-score-badge');
+            if (scoreBadge) scoreBadge.innerText = 'Score: ' + quizScore;
+
+            if (quizScore > highScore) {
+                highScore = quizScore;
+                localStorage.setItem('lingobloom_highscore', highScore);
+            }
+            updateDashboardStats();
+
+            quizTimer = setTimeout(loadQuizQuestion, 2000);
+        }
+
+        function resetData() {
+            if (confirm('Are you sure you want to reset your saved statistics?')) {
+                localStorage.removeItem('lingobloom_highscore');
+                localStorage.removeItem('lingobloom_reviewed');
+                studiedCount = 0;
+                highScore = 0;
+                quizScore = 0;
+                var scoreBadge = document.getElementById('quiz-score-badge');
+                if (scoreBadge) scoreBadge.innerText = 'Score: 0';
+                updateDashboardStats();
+                alert('Progress reset successfully!');
+            }
+        }
+    </script>
+</body>
+</html>
